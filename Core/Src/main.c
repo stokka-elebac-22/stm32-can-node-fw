@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "defines.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,14 +52,6 @@ void HCSR04_Read(void);
 #define TRIG_PIN GPIO_PIN_9
 #define TRIG_PORT GPIOA
 
-// Message IDs
-#define CAN_MOTOR_DATA_ID 	   0x010
-#define CAN_LIGHT_CONTROL_ID   0x011
-#define CAN_BLINK_CONTROL_ID   0x012
-#define CAN_SENSOR_DATA_ID     0x030
-#define CAN_TEST_MSG_ID        0x050
-#define CAN_DEVICE_SETTINGS_ID 0x060
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -73,7 +65,7 @@ TIM_HandleTypeDef htim2;
 uint8_t Placement = 0;
 
 uint8_t flag_send_data = 0;
-uint8_t flag_blink_light = 0;
+uint8_t flag_blink_light = 1;
 uint8_t flag_read_dist_sensor = 0;
 uint8_t flag_tx_sensor_data = 0;
 uint8_t flag_hcsr04_first_captured = 0;
@@ -200,6 +192,7 @@ int main(void)
 		  HAL_GPIO_WritePin(LIGHT_PORT, LIGHT_PIN, GPIO_PIN_RESET);
 	  }
 	  if (flag_send_test_msg && flag_send_data) {
+		  txHeader.DLC = 8;
 		  txHeader.StdId = CAN_TEST_MSG_ID;
 		  uint8_t csend[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 		  HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
@@ -212,13 +205,15 @@ int main(void)
 		  flag_read_dist_sensor = 0;
 		  HCSR04_Read();
 	  }
-	  if (flag_tx_sensor_data != 0) {
+	  if (flag_tx_sensor_data) {
 		  flag_tx_sensor_data = 0;
-		  uint8_t csend[] = {Placement,0x00,0x00,0x00,0x00,0x00,0x00,hcsr04_dist};
+		  txHeader.DLC = 8;
+		  uint8_t csend[] = {Placement,SENSOR_HCSR,0x00,0x00,0x00,0x00,0x00,hcsr04_dist};
 		  txHeader.StdId = CAN_SENSOR_DATA_ID;
 		  HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
 	  }
     /* USER CODE END WHILE */
+
 
     /* USER CODE BEGIN 3 */
   }

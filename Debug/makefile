@@ -60,8 +60,8 @@ all: main-build
 main-build: RC_STM32_CAN_Rx_Tx.elf secondary-outputs
 
 # Tool invocations
-RC_STM32_CAN_Rx_Tx.elf RC_STM32_CAN_Rx_Tx.map: $(OBJS) $(USER_OBJS) C:\Users\asbjo\Downloads\STM32-CAN-bus-example-rx-tx-master\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RC_STM32_CAN_Rx_Tx.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\asbjo\Downloads\STM32-CAN-bus-example-rx-tx-master\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RC_STM32_CAN_Rx_Tx.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RC_STM32_CAN_Rx_Tx.elf RC_STM32_CAN_Rx_Tx.map: $(OBJS) $(USER_OBJS) C:\Users\asbjo\Documents\stm32-can-node-fw\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RC_STM32_CAN_Rx_Tx.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\asbjo\Documents\stm32-can-node-fw\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RC_STM32_CAN_Rx_Tx.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
